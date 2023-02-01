@@ -6,7 +6,7 @@ public abstract class Account {
     private String number;
     private String agency;
     private Customer customer;
-    private double balance;
+    protected double balance;
 
     public Account(Customer customer) {
         this.customer = customer;
@@ -16,23 +16,9 @@ public abstract class Account {
         this.balance += value;
     }
 
-    public boolean withdrawal(double value) {
-        if (this.balance < value) {
-            return false;
-        }
+    public abstract boolean withdrawal(double value);
 
-        this.balance -= value;
-        return true;
-    }
-
-    public boolean transfer(Account destinationAccount, double value) {
-        if (this.withdrawal(value)) {
-            destinationAccount.deposit(value);
-            return true;
-        }
-
-        return false;
-    }
+    public abstract boolean transfer(Account destinationAccount, double value);
 
     public String getNumber() {
         return number;
@@ -52,5 +38,9 @@ public abstract class Account {
 
     public Customer getCustomer() {
         return customer;
+    }
+
+    public double getBalance() {
+        return balance;
     }
 }

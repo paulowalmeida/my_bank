@@ -9,6 +9,8 @@ public class AccountView {
         showInfoCustomer(account.getCustomer());
         System.out.println("Agência: " + account.getAgency());
         System.out.println("Número: " + account.getNumber());
+        System.out.println("Saldo: " + account.getBalance());
+        System.out.println();
     }
 
     private static void showInfoCustomer(Customer customer) {
