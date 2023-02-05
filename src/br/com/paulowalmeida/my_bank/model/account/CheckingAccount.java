@@ -1,32 +1,28 @@
 package br.com.paulowalmeida.my_bank.model.account;
 
 import br.com.paulowalmeida.my_bank.model.Customer;
+import br.com.paulowalmeida.my_bank.model.income_tax.Taxable;
 
 public class CheckingAccount extends Account implements Taxable {
 
-    public CheckingAccount(Customer customer) {
-        super(customer);
+    public CheckingAccount(Customer customer, String agency, String number, double balance) {
+        super(customer, agency, number, balance);
     }
 
     @Override
-    public boolean transfer(Account destinationAccount, double value) {
-        double valueWithTax = value + 0.1;
-
-        if (this.withdrawal(valueWithTax)) {
-            destinationAccount.deposit(value);
-            return true;
-        }
-        return false;
+    public void transfer(Account destinationAccount, double value) throws InsufficientBalanceException {
+        this.withdrawal(value, 0.1);
+        destinationAccount.deposit(value);
     }
 
     @Override
-    public boolean withdrawal(double value) {
-        double valueWithTax = value + 0.1;
-        if (this.balance < valueWithTax) {
-            return false;
-        }
+    public void withdrawal(double value, Double tax) throws InsufficientBalanceException {
+        double valueWithTax = value + (tax.equals(null) ? 0.1 : tax);
+        super.withdrawal(value, tax);
+    }
 
-        this.balance -= value;
-        return true;
+    @Override
+    public double getTaxAmount() {
+        return super.getBalance() * 0.01;
     }
 }

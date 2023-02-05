@@ -1,42 +1,49 @@
 import br.com.paulowalmeida.my_bank.model.Customer;
+import br.com.paulowalmeida.my_bank.model.LifeInsurance;
 import br.com.paulowalmeida.my_bank.model.account.CheckingAccount;
-import br.com.paulowalmeida.my_bank.view.AccountView;
+import br.com.paulowalmeida.my_bank.model.income_tax.TaxCalculator;
 
 public class Main {
     public static void main(String[] args) {
-        Customer customer1 = new Customer();
-        customer1.setFirstName("Samuel");
-        customer1.setLastName("Winchester");
-        customer1.setCpf("000.111.222-33");
-        customer1.setRg("1234567");
+        Customer customer1 = new Customer("Samuel", "Winchester", "000.111.222-33", "1234567");
+        Customer customer2 = new Customer("Robert", "Singer", "999.888.777-66", "7654321");
 
-        CheckingAccount checkingAccount1 = new CheckingAccount(customer1);
-        checkingAccount1.setAgency("1234");
-        checkingAccount1.setNumber("56789-0");
-        checkingAccount1.deposit(1000);
+        CheckingAccount checkingAccount1 = new CheckingAccount(customer1, "1234", "56789-0", 1000.0);
+        CheckingAccount checkingAccount2 = new CheckingAccount(customer2, "1234", "56789-0", 2000.0);
 
-        Customer customer2 = new Customer();
-        customer2.setFirstName("Robert");
-        customer2.setLastName("Singer");
-        customer2.setCpf("999.888.777-66");
-        customer2.setRg("7654321");
+        System.out.println("Contas ativas");
+        System.out.println("-------------");
+        checkingAccount1.showInfoAccount();
+        checkingAccount2.showInfoAccount();
 
-        CheckingAccount checkingAccount2 = new CheckingAccount(customer2);
-        checkingAccount2.setAgency("1234");
-        checkingAccount2.setNumber("56789-0");
-        checkingAccount2.deposit(2000);
-
-        /*-------------------*/
-        AccountView.showInfoAccount(checkingAccount1);
-        AccountView.showInfoAccount(checkingAccount2);
-
-        if(checkingAccount1.transfer(checkingAccount2, 200)) {
-            System.out.println("Transferencia realizada com sucesso!\n");
-        } else {
-            System.out.println("Não foi possível realizar a transferência :(\n");
+        try {
+            System.out.println("Tentando realizar transferencia de:");
+            System.out.println("Remetente: " + checkingAccount1.getCustomer().getFirstName() + " " + checkingAccount1.getCustomer().getLastName());
+            System.out.println("Destinatario: " + checkingAccount2.getCustomer().getFirstName() + " " + checkingAccount2.getCustomer().getLastName());
+            System.out.println("Valor: " + 3000.0);
+            System.out.println();
+            checkingAccount1.transfer(checkingAccount2, 3000.0);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println();
         }
 
-        AccountView.showInfoAccount(checkingAccount1);
-        AccountView.showInfoAccount(checkingAccount2);
+        checkingAccount1.showInfoAccount();
+        checkingAccount2.showInfoAccount();
+
+        System.out.println();
+        System.out.println("Verificando a taxação das contas...");
+        System.out.println();
+
+        LifeInsurance lifeInsurance = new LifeInsurance();
+        TaxCalculator taxCalculator = new TaxCalculator();
+
+        taxCalculator.register(checkingAccount1);
+        taxCalculator.register(checkingAccount2);
+        taxCalculator.register(lifeInsurance);
+
+        System.out.println("Processando...");
+
+        System.out.println("O total de taxação de imposto é: " + taxCalculator.getTotalizer());
     }
 }

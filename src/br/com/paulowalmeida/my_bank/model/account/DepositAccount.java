@@ -8,12 +8,14 @@ public class DepositAccount extends Account {
     }
 
     @Override
-    public boolean withdrawal(double value) {
-        return false;
+    public void withdrawal(double value, Double tax) throws InsufficientBalanceException {
+        double valueWithTax = value + (tax.equals(null) ? 0.1 : tax);
+        super.withdrawal(valueWithTax, null);
     }
 
     @Override
-    public boolean transfer(Account destinationAccount, double value) {
-        return false;
+    public void transfer(Account destinationAccount, double value) throws InsufficientBalanceException {
+        this.withdrawal(value, 5.0);
+        destinationAccount.deposit(value);
     }
 }
